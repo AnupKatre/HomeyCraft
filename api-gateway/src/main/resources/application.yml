@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: API_GATEWAY
+
+  cloud:
+    gateway:
+      routes:
+        - id: PRODUCT-SERVICE
+          uri:
+            lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product/**
+
+
+        - id: PAYMENT-SERVICE
+          uri:
+            lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment/**
+
+
+        - id: CART-SERVICE
+          uri:
+            lb://CART-SERVICE
+          predicates:
+            - Path=/cart/**
+
+        - id: AUTHENTICATION-SERVICE
+          uri:
+            lb://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/authentication/**
+
+        - id: BUYER-USER-SERVICE
+          uri:
+            lb://BUYER-USER-SERVICE
+          predicates:
+            - Path=/buyer/**
+
+        - id: EMAIL-SERVICE
+          uri:
+            lb://EMAIL-SERVICE
+          predicates:
+            - Path=/email/**
+
+        - id: SELLER-USER-SERVICE
+          uri:
+            lb://SELLER-USER-SERVICE
+          predicates:
+            - Path=/seller/**
+
+#        - id: ORDER-SERVICE
+#          uri:
+#            lb://ORDER-SERVICE
+#          predicates:
+#            - Path=/order/**
+#

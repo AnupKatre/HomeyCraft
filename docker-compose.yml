@@ -1,0 +1,144 @@
+version: "2"
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    #    network_mode: host
+    hostname: localhost
+    ports:
+      - 27017:27017
+  mysqlservice:
+    image: mysql:latest
+    container_name: mysql-container
+    restart: always
+    #    network_mode: "host"
+    hostname: localhost
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_USERNAME: 'root'
+    #      MYSQL_PASSWORD: root
+    #      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: homeycraftrabbitmq
+    #    network_mode: "host"
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    restart: always
+    #    network_mode: host
+    hostname: localhost
+    ports:
+      - 8761:8761
+  api-gateway:
+    container_name: api-gateway
+    build: ./api-gateway
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8080:8080
+    depends_on:
+      - eureka-server
+    restart: always
+  email-service:
+    container_name: email-service
+    build: ./email-service
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8096:8096
+    depends_on:
+      - rabbitmq
+      - eureka-server
+    restart: always
+  order-service:
+    container_name: order-service
+    build: ./order-service
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8095:8095
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - eureka-server
+    restart: always
+  payment-service:
+    container_name: payment-service
+    build: ./payment-service
+    hostname: localhost
+#    network_mode: host
+    ports:
+      - 8094:8094
+    depends_on:
+      - mysqlservice
+      - eureka-server
+    restart: always
+  buyer-user-service:
+    container_name: buyer-user-service
+    build: ./buyer-user-service
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8089:8089
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - eureka-server
+    restart: always
+  seller-user-service:
+    container_name: seller-user-service
+    build: ./seller-user-service
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8090:8090
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - eureka-server
+    restart: always
+  authentication-service:
+    container_name: authentication-service
+    build: ./authentication-service
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8091:8091
+    depends_on:
+      - mysqlservice
+      - eureka-server
+      - rabbitmq
+    restart: always
+  cart-service:
+    container_name: cart-service
+    build: ./cart-service
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8093:8093
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - eureka-server
+    restart: always
+  product-service:
+    container_name: product-service
+    build: ./product-service
+    hostname: localhost
+    #    network_mode: host
+    ports:
+      - 8092:8092
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - eureka-server
+    restart: always
